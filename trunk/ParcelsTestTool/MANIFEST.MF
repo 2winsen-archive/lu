@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: lv.parcels.Main
+Class-Path: external/commons-io-1.3.2.jar external/commons-lang-2.5.jar
