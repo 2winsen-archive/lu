@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="build">
+
+	<property name="classes" location="build/classes" />
+	<property name="jar" location="build/jar" />
+	<property name="projectName" value="Filters'n'Edges" />
+
+	<target name="clean">
+		<delete dir="build"/>
+	</target>
+
+	<target name="compile">
+		<mkdir dir="${classes}"/>
+		<javac srcdir="src" destdir="${classes}"/>
+		<mkdir dir="${classes}/res"/>
+		<copy todir="${classes}/res">
+			<fileset dir="res"/>
+		</copy>
+	</target>
+
+	<target name="archive">
+		<mkdir dir="${jar}"/>
+		<jar destfile="${jar}/${projectName}.jar" basedir="${classes}">
+			<manifest>
+				<attribute name="Main-Class" value="lv.lu.cg.main.Main"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="copy">
+		<mkdir dir="${jar}/src"/>
+		<copy file="Description.doc" todir="${jar}"/>
+		<copy todir="${jar}/src">
+			<fileset dir="src"/>
+		</copy>
+	</target>
+
+	<target name="delete">
+		<delete dir="${classes}/res" />
+	</target>
+	
+	<target name="run">
+		<java jar="${jar}/${projectName}.jar" fork="true" />
+	</target>
+
+	<target name="build" depends="clean, compile, archive, copy, delete" />
+
+</project>
+
