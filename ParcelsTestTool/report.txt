@@ -1,0 +1,27 @@
+parcels_2.exe
+
+parcels.i1 SUCCESS
+parcels.i10 FAILURE
+parcels.i11 FAILURE
+parcels.i12 FAILURE
+parcels.i13 FAILURE
+parcels.i14 SUCCESS
+parcels.i15 SUCCESS
+parcels.i16 SUCCESS
+parcels.i17 SUCCESS
+parcels.i18 FAILURE
+parcels.i19 FAILURE
+parcels.i2 SUCCESS
+parcels.i20 FAILURE
+parcels.i21 SUCCESS
+parcels.i22 FAILURE
+parcels.i23 SUCCESS
+parcels.i24 FAILURE
+parcels.i3 FAILURE
+parcels.i4 FAILURE
+parcels.i5 FAILURE
+parcels.i6 FAILURE
+parcels.i7 SUCCESS
+parcels.i8 SUCCESS
+parcels.i9 SUCCESS
+TESTS FAILED
