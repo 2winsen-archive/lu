@@ -43,7 +43,6 @@ public class FrontController {
 		canvas.setClear(false);
 		canvas.setData(dao.getData());
 		canvas.setChart(chart);
-		
 	}
 
 }

@@ -18,28 +18,26 @@ public class PieChart implements Chart {
 		}
 
 		// Draw each pie slice
-		double curValue = 0.0D;
-		int checkAngle = 0;
+		int startAngle = 0;
 		for (ChartItem chartItem : data) {
 			int arcAngle = (int) Math.round(chartItem.getValue() * 360 / total);
 
 			// Ensure that rounding errors do not leave a gap between the first and last slice
 			if (chartItem.hashCode() == data.get(data.size() - 1).hashCode()) {
-				arcAngle = 360 - checkAngle;
+				arcAngle = 360 - startAngle;
 			}
 
 			// Set the color and draw a filled arc
 			g.setColor(chartItem.getColor());
 			
-			System.out.println(checkAngle);
+			System.out.println(startAngle);
 			System.out.println(arcAngle);
 			System.out.println();
 			
 			
-			g.fillArc(0, 0, canvas.getWidth(), canvas.getHeight(), checkAngle, arcAngle);
+			g.fillArc(0, 0, canvas.getWidth(), canvas.getHeight(), startAngle, arcAngle);
 
-			curValue += chartItem.getValue();
-			checkAngle = checkAngle + arcAngle;
+			startAngle = startAngle + arcAngle;
 		}
 	}
 
