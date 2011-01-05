@@ -1,5 +1,6 @@
 package lu.lv.gui;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +47,7 @@ public class MainApplet extends JApplet implements ActionListener {
 	private final JTable marksTable = new JTable(INITIAL_TABLE_DATA, TABLE_COLUMN_NAMES);
 	private final JPanel chartPanel = new JPanel();
 	private final JLabel chartTitle = new JLabel();
+	private final Canvas chartLegend = new Canvas();
 	private final ChartCanvas chartCanvas = new ChartCanvas();
 	private JLabel validationError = new JLabel();
 
@@ -110,6 +112,9 @@ public class MainApplet extends JApplet implements ActionListener {
 		chartTitle.setBounds(PADDING_LEFT, PADDING_TOP, 600, 25);
 		chartPanel.add(chartTitle);
 		
+		chartLegend.setBounds(PADDING_LEFT + 700, PADDING_TOP, 300, 500);
+		chartPanel.add(chartLegend);
+		
 		chartCanvas.setBounds(0, 45, 400, 400);
 		chartPanel.add(chartCanvas);
 	}
@@ -151,6 +156,9 @@ public class MainApplet extends JApplet implements ActionListener {
 		}
 		return data;
 	}
+	
+	private void populateChartLegend() {
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -160,7 +168,8 @@ public class MainApplet extends JApplet implements ActionListener {
 				controller.processData(parseInputData());
 				tabbedPane.setSelectedIndex(CHART_PANEL_INDEX);
 				chartTitle.setText("<html>Chart: students' marks in <i><font size='5' color='#A2A2A2'>" + courseInput.getText() + "</font></i></html>");
-				chartTitle.validate();
+				populateChartLegend();
+				
 				controller.draw(chartCanvas);				
 			} else {
 				validationError.setText("Incorrect Input Data!");
