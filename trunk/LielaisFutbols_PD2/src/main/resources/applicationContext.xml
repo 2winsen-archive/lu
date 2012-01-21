@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<!-- XML parser -->
+	<bean id="domXmlParser" class="lv.lu.mpt.pd2.xml.DomXmlParser">
+		<property name="gameService" ref="gameService" />
+		<property name="teamService" ref="teamService" />
+		<property name="playerService" ref="playerService" />
+		<property name="refereeService" ref="refereeService" />
+	</bean>
+
+	<!-- Bean for common DAO operations -->
+	<bean id="commonDAO" class="lv.lu.mpt.pd2.impl.CommonDAOImpl" />
+
+	<!-- Services -->
+	<bean id="uploadService" class="lv.lu.mpt.pd2.impl.service.UploadServiceImpl">
+		<property name="xmlParser" ref="domXmlParser" />
+		<property name="commonDAO" ref="commonDAO" />
+	</bean>
+	<bean id="baseService" class="lv.lu.mpt.pd2.impl.service.BaseService">
+		<property name="commonDAO" ref="commonDAO" />
+	</bean>
+	<bean id="playerService" class="lv.lu.mpt.pd2.impl.service.PlayerServiceImpl">
+		<property name="commonDAO" ref="commonDAO" />
+	</bean>
+	<bean id="refereeService" class="lv.lu.mpt.pd2.impl.service.RefereeServiceImpl">
+		<property name="commonDAO" ref="commonDAO" />
+	</bean>
+	<bean id="teamService" class="lv.lu.mpt.pd2.impl.service.TeamServiceImpl">
+		<property name="commonDAO" ref="commonDAO" />
+	</bean>
+	<bean id="gameService" class="lv.lu.mpt.pd2.impl.service.GameServiceImpl">
+		<property name="commonDAO" ref="commonDAO" />
+	</bean>
+
+	<!-- Persistence configuration -->
+	<!-- Database connection properties are specified in \lab01-football\src\main\resources\META-INF\persistence.xml 
+		file -->
+    <bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+    	<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="username" value="pd2_user"/>
+		<property name="password" value="pd2_user"/>
+		<property name="url" value="jdbc:mysql://localhost/pd2_db"/>	
+    </bean>		
+		
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="hibernate_mysql" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans>
