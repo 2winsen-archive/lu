@@ -211,21 +211,55 @@ public class DomXmlParser implements XmlParser {
 		
 		// Setting teams lost goals
 		for (Goal g : team1Goals) {
-			if (g.getTeamScored().equals(team1)) {
-				g.setTeamLost(team2);
-			} else {
-				g.setTeamLost(team1);
-			}
+			setTeamWhoLostGoal(g);
+			setGoalkeeperWhoLostGoal(g);
+			
 		}
 		for (Goal g : team2Goals) {
-			if (g.getTeamScored().equals(team1)) {
-				g.setTeamLost(team2);
-			} else {
-				g.setTeamLost(team1);
-			}
+			setTeamWhoLostGoal(g);
+			setGoalkeeperWhoLostGoal(g);
+		}
+	}
+
+	private void setTeamWhoLostGoal(Goal g) {
+		if (g.getTeamScored().equals(team1)) {
+			g.setTeamLost(team2);
+		} else {
+			g.setTeamLost(team1);
 		}
 	}
 	
+	private void setGoalkeeperWhoLostGoal(Goal g) {
+		Set<Player> tempLineUp = null;
+		if (g.getTeamScored().equals(team1)) {
+			tempLineUp = game.getTeam2LineUp();
+		} else {
+			tempLineUp = game.getTeam1LineUp();
+		}
+		
+		Player keeper = null;
+		for ( Player p : tempLineUp) {
+			if (p.getRole().equals(RoleEnum.GOALKEEPER)) {
+				keeper = p;
+				break;
+			}
+		}
+		g.setGoalkeeperLost(keeper);
+		for (Change c : game.getChanges()) {
+			if (c.getPlayerFrom().equals(keeper)) {
+				if (isGoalAfterChange(g, c)) {
+					keeper = c.getPlayerTo();
+					g.setGoalkeeperLost(keeper);			
+				}
+			}
+		}
+		g.setGoalkeeperLost(keeper);
+	}
+
+	private boolean isGoalAfterChange(Goal g, Change c) {
+		return g.getMinutes() > c.getMinutes() || (g.getMinutes() == c.getMinutes() && g.getSeconds() == c.getSeconds());
+	}
+	 
 	private Referee extractReferee(Node node) {
 		Referee referee = new Referee();
 		NamedNodeMap nodes = node.getAttributes();
@@ -391,7 +425,13 @@ public class DomXmlParser implements XmlParser {
 				
 				// Nr
 				if (XmlConsts.Player.ATTR_NUMBER.equals(attrib.getNodeName())) {
-					lineUp.add(getPlayerByNumber(Integer.parseInt(attrib.getNodeValue().trim()), team.getPlayers()));
+					Player p = getPlayerByNumber(Integer.parseInt(attrib.getNodeValue().trim()), team.getPlayers());
+					if (p.getGamesPlayed() == null) {
+						p.setGamesPlayed(1);	
+					} else {
+						p.setGamesPlayed(p.getGamesPlayed() + 1);
+					}
+					lineUp.add(p);
 				}
 			}
 		}
@@ -560,7 +600,13 @@ public class DomXmlParser implements XmlParser {
 				
 				// Nr2
 				if (XmlConsts.Change.ATTR_NUMBER_TO.equals(attrib.getNodeName())) {
-					change.setPlayerTo(getPlayerByNumber(Integer.parseInt(attrib.getNodeValue()), team.getPlayers()));
+					Player p = getPlayerByNumber(Integer.parseInt(attrib.getNodeValue()), team.getPlayers());
+					if (p.getGamesPlayed() == null) {
+						p.setGamesPlayed(1);	
+					} else {
+						p.setGamesPlayed(p.getGamesPlayed() + 1);
+					}
+					change.setPlayerTo(p);
 					continue;
 				}
 			}
