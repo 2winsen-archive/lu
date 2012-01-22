@@ -7,6 +7,7 @@ public final class JPQLConst {
 
 	public interface TeamJPQL {
 		String QUERY_GET_TEAM = "getTeam";
+		String QUERY_GET_ALL_TEAM_NAMES = "getAllTeamNames";
 	}
 	
 	public interface GameJPQL {

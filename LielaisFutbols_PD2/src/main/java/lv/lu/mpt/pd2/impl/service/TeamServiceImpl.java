@@ -25,4 +25,13 @@ public class TeamServiceImpl extends BaseService implements TeamService {
 		return result.get(0);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getAllTeamNames() {
+		Query query = null;
+		query = getCommonDAO().getEntityManager().createNamedQuery(
+				JPQLConst.TeamJPQL.QUERY_GET_ALL_TEAM_NAMES);
+		return (List<String>)query.getResultList();
+	}
+
 }
