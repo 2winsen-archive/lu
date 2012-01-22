@@ -27,6 +27,7 @@ public class SplitPanePanel extends JPanel {
 			splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 			splitPane.setOneTouchExpandable(true);
 			splitPane.setDividerLocation(MainFrame.FRAME_HEIGHT / 5);
+			splitPane.setEnabled(false);
 
 			dataScrollPane = new DataScrollPane();
 	    	queryPanel = new QueryPanel(dataScrollPane);

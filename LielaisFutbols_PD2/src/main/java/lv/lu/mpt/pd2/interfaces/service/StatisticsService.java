@@ -1,7 +1,5 @@
 package lv.lu.mpt.pd2.interfaces.service;
 
-import java.util.List;
-
 import javax.sql.DataSource;
 
 
@@ -9,13 +7,13 @@ public interface StatisticsService {
 	
 	DataSource getDataSource();
 	
-	List<?> getLeagueTable();
+	Object[][] getLeagueTable();
 	
-	List<?> getTop10Scorers();
+	Object[][] getTop10Scorers();
 	
-	List<?> getTop5GoalKeepers();
+	Object[][] getTop5GoalKeepers();
 	
-	List<?> getTopAggressivePlayers();
+	Object[][] getTopAggressivePlayers();
 	
-	List<?> getTopStrictReferees();
+	Object[][] getTopStrictReferees();
 }

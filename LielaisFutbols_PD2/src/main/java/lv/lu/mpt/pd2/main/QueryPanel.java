@@ -124,9 +124,15 @@ public class QueryPanel extends JPanel implements ActionListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == COMBOBOX_NEW_STATE) {
 					if (e.getItem().equals(LEAGUGE_TABLE)) {
-						// TODO: Test only
-						dataScrollPane.setModel(new DataTableModel(new Object[][]{{"aaaaa", "bbbbb", "ccccc"},{"ddddd", "eeeee", "fffff"}}, new Object[]{"aa", "bb", "cc"}));
-						statisticsService.getLeagueTable();
+//						// TODO: Test only
+//						dataScrollPane.setModel(new DataTableModel(new Object[][]{{"XYZ", "10", "20"},{"Veiklie", "6", "20"}}, new Object[]{"team", "totalPoints", "totalWins"}));
+//						statisticsService.getLeagueTable();
+						
+						Object[] columnNames = {"Team Name", "Total Points", "Total Wins", "Total Losses", "Total Wins (Extra time)", 
+								"Total Losses (Extra time)", "Total Goals Scored", "Total Goals Lost"};
+						Object[][] data = statisticsService.getLeagueTable();
+						dataScrollPane.setModel(new DataTableModel(data, columnNames));
+						
 					} else if (e.getItem().equals(TOP_10_SCORERS)) {
 						
 					} else if (e.getItem().equals(TOP_5_GOALKEEPERS)) {
