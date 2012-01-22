@@ -35,6 +35,10 @@ public class DomXmlParser implements XmlParser {
 	
 	private Game game;
 	
+	private Team team1;
+	
+	private Team team2;
+	
 	private Set<Goal> team1Goals;
 	
 	private Set<Goal> team2Goals;
@@ -173,14 +177,17 @@ public class DomXmlParser implements XmlParser {
 				if (game.getTeam1() == null) {
 					team = extractTeam(child, true);
 					game.setTeam1(team);
+					team1 = team;
 				} else {
 					team = extractTeam(child, false);
 					game.setTeam2(team);
+					team2 = team;
 				}
 				continue;
 			}
 		}
 		
+		// Setting points per game
 		game.setExtraTime(isExtraTime);
 		if (!isExtraTime) {
 			if (team1Goals.size() > team2Goals.size()) {
@@ -199,6 +206,22 @@ public class DomXmlParser implements XmlParser {
 			} else {
 				game.setTeam1Points(1);
 				game.setTeam2Points(2);				
+			}
+		}
+		
+		// Setting teams lost goals
+		for (Goal g : team1Goals) {
+			if (g.getTeamScored().equals(team1)) {
+				g.setTeamLost(team2);
+			} else {
+				g.setTeamLost(team1);
+			}
+		}
+		for (Goal g : team2Goals) {
+			if (g.getTeamScored().equals(team1)) {
+				g.setTeamLost(team2);
+			} else {
+				g.setTeamLost(team1);
 			}
 		}
 	}
@@ -445,6 +468,7 @@ public class DomXmlParser implements XmlParser {
 				goal.setAssistants(assistants);
 			}
 
+			goal.setTeamScored(team);
 			// add goal to result list
 			if (goal != null) {
 				goal.setGame(game);

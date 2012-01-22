@@ -1,13 +1,15 @@
 package lv.lu.mpt.pd2.impl.service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
+import lv.lu.mpt.pd2.constants.QueryConstants;
 import lv.lu.mpt.pd2.interfaces.service.StatisticsService;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class StatisticsServiceImpl implements StatisticsService {
 	
@@ -22,49 +24,66 @@ public class StatisticsServiceImpl implements StatisticsService {
 	}
 
 	@Override
-	public List<?> getLeagueTable() {
-		JdbcTemplate select = new JdbcTemplate(dataSource);
-		String query = "select * from team";
-//			"SELECT name," +
-//			       "SUM(tempsum)" +
-//			"FROM   (SELECT t.name," +
-//			               "SUM(g.team1points) AS tempsum" +
-//			        "FROM   team AS t"+
-//			               "INNER JOIN game AS g" +
-//			                 "ON ( t.id = g.team1_id )" +
-//			        "GROUP  BY t.name" +
-//			        "UNION" +
-//			        "SELECT t.name," +
-//			               "SUM(g.team2points)" +
-//			        "FROM   team AS t" +
-//			               "INNER JOIN game AS g" +
-//			                 "ON ( t.id = g.team2_id )" +
-//			        "GROUP  BY t.name) AS query" +
-//			"GROUP  BY name";
-			
-		
-		SqlRowSet rowSet = select.queryForRowSet(query);
+	public Object[][] getLeagueTable() {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(QueryConstants.LEAGUE_TABLE_QUERY);
+
+		Object[][] data = new Object[rows.size()][8];;
+		int rowIndex = 0;
+		int colIndex = 0;
+		for (Map<String, Object> row : rows) {
+			data[rowIndex][colIndex] = row.get("name");
+			colIndex++;
+			data[rowIndex][colIndex] = parseNulls(row.get("totalpoints"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNulls(row.get("totalwins"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNulls(row.get("totallosses"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNulls(row.get("totalwinsinextratime"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNulls(row.get("totallossesinextratime"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNulls(row.get("totalgoalsscored"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNulls(row.get("totalgoalslost"));
+			rowIndex++;
+			colIndex = 0;
+		}
+		return data;
+	}
+
+	@Override
+	public Object[][] getTop10Scorers() {
 		return null;
 	}
 
 	@Override
-	public List<?> getTop10Scorers() {
+	public Object[][] getTop5GoalKeepers() {
 		return null;
 	}
 
 	@Override
-	public List<?> getTop5GoalKeepers() {
+	public Object[][] getTopAggressivePlayers() {
 		return null;
 	}
 
 	@Override
-	public List<?> getTopAggressivePlayers() {
+	public Object[][] getTopStrictReferees() {
 		return null;
 	}
-
-	@Override
-	public List<?> getTopStrictReferees() {
-		return null;
+	
+	private Integer parseNulls(Object value) {
+		if (value == null) {
+			return 0;
+		}
+		if (value instanceof BigDecimal) {
+			return ((BigDecimal)value).intValue();	
+		}
+		if (value instanceof Long) {
+			return ((Long)value).intValue();	
+		}
+		return (Integer)value;
 	}
 
 }

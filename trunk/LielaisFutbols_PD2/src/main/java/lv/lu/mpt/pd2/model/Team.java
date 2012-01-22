@@ -33,7 +33,7 @@ public class Team implements PersistentEntity {
 	@OneToMany(mappedBy = "team")
 	@Cascade(CascadeType.ALL)
 	private Set<Player> players;
-
+	
 	public Long getId() {
 		return id;
 	}

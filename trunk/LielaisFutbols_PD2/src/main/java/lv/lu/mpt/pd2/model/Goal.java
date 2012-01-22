@@ -33,6 +33,12 @@ public class Goal implements PersistentEntity {
 
 	@OneToOne
 	private Player player;
+	
+	@OneToOne
+	private Team teamScored;
+	
+	@OneToOne
+	private Team teamLost;
 
 	@ManyToMany
 	@JoinTable(
@@ -92,6 +98,22 @@ public class Goal implements PersistentEntity {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+	
+	public Team getTeamScored() {
+		return teamScored;
+	}
+
+	public void setTeamScored(Team teamScored) {
+		this.teamScored = teamScored;
+	}
+
+	public Team getTeamLost() {
+		return teamLost;
+	}
+
+	public void setTeamLost(Team teamLost) {
+		this.teamLost = teamLost;
 	}
 
 	public Set<Player> getAssistants() {
