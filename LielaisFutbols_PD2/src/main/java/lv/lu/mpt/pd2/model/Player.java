@@ -36,6 +36,8 @@ public class Player implements PersistentEntity {
 	@JoinColumn(name = "team_id")
 	private Team team;
 	
+	private Integer gamesPlayed;
+	
 	public Long getId() {
 		return id;
 	}
@@ -82,6 +84,14 @@ public class Player implements PersistentEntity {
 
 	public void setTeam(Team team) {
 		this.team = team;
+	}
+
+	public Integer getGamesPlayed() {
+		return gamesPlayed;
+	}
+
+	public void setGamesPlayed(Integer gamesPlayed) {
+		this.gamesPlayed = gamesPlayed;
 	}
 
 	@Override

@@ -124,9 +124,6 @@ public class QueryPanel extends JPanel implements ActionListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == COMBOBOX_NEW_STATE) {
 					if (e.getItem().equals(LEAGUGE_TABLE)) {
-//						// TODO: Test only
-//						dataScrollPane.setModel(new DataTableModel(new Object[][]{{"XYZ", "10", "20"},{"Veiklie", "6", "20"}}, new Object[]{"team", "totalPoints", "totalWins"}));
-//						statisticsService.getLeagueTable();
 						
 						Object[] columnNames = {"Team Name", "Total Points", "Total Wins", "Total Losses", "Total Wins (Extra time)", 
 								"Total Losses (Extra time)", "Total Goals Scored", "Total Goals Lost"};
@@ -135,12 +132,27 @@ public class QueryPanel extends JPanel implements ActionListener {
 						
 					} else if (e.getItem().equals(TOP_10_SCORERS)) {
 						
+						Object[] columnNames = {"First Name", "Last Name", "Team", "Total Goals", "Total Assists"};
+						Object[][] data = statisticsService.getTop10Scorers();
+						dataScrollPane.setModel(new DataTableModel(data, columnNames));
+						
 					} else if (e.getItem().equals(TOP_5_GOALKEEPERS)) {
+						
+						Object[] columnNames = {"First Name", "Last Name", "Team", "Average Lost Goals (Per Game)"};
+						Object[][] data = statisticsService.getTop5GoalKeepers();
+						dataScrollPane.setModel(new DataTableModel(data, columnNames));
 						
 					} else if (e.getItem().equals(TOP_AGGRESSIVE_PLAYERS)) {
 						
-					} else if (e.getItem().equals(TOP_STRICT_REFEREES)) {
+						Object[] columnNames = {"First Name", "Last Name", "Team", "Total Penalties"};
+						Object[][] data = statisticsService.getTopAggressivePlayers();
+						dataScrollPane.setModel(new DataTableModel(data, columnNames));
 						
+					} else if (e.getItem().equals(TOP_STRICT_REFEREES)) {
+
+						Object[] columnNames = {"First Name", "Last Name", "Total Penalties Given"};
+						Object[][] data = statisticsService.getTopStrictReferees();
+						dataScrollPane.setModel(new DataTableModel(data, columnNames));
 					}
 				}
 			}
@@ -192,8 +204,6 @@ public class QueryPanel extends JPanel implements ActionListener {
 			    		exception.printStackTrace();
 			    	}
 			    }
-			} else {
-				System.out.println("No Selection ");
 			}			
 		}
 		else {

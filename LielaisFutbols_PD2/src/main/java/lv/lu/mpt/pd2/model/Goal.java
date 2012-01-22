@@ -35,6 +35,9 @@ public class Goal implements PersistentEntity {
 	private Player player;
 	
 	@OneToOne
+	private Player goalkeeperLost;
+	
+	@OneToOne
 	private Team teamScored;
 	
 	@OneToOne
@@ -99,7 +102,15 @@ public class Goal implements PersistentEntity {
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
-	
+
+	public Player getGoalkeeperLost() {
+		return goalkeeperLost;
+	}
+
+	public void setGoalkeeperLost(Player goalkeeperLost) {
+		this.goalkeeperLost = goalkeeperLost;
+	}
+
 	public Team getTeamScored() {
 		return teamScored;
 	}
