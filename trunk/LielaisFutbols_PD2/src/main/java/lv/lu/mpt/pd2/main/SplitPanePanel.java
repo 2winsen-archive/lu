@@ -3,7 +3,6 @@ package lv.lu.mpt.pd2.main;
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
 @SuppressWarnings("serial")
@@ -11,7 +10,7 @@ public class SplitPanePanel extends JPanel {
 
 	private JSplitPane splitPane;
 	private QueryPanel queryPanel;
-	private DataPanel dataPanel;
+	private DataScrollPane dataScrollPane;
 
 	public SplitPanePanel() {
 		initGUI();
@@ -27,12 +26,10 @@ public class SplitPanePanel extends JPanel {
 		if (splitPane == null) {
 			splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 			splitPane.setOneTouchExpandable(true);
-			splitPane.setDividerLocation(MainFrame.FRAME_HEIGHT / 3);
+			splitPane.setDividerLocation(MainFrame.FRAME_HEIGHT / 5);
 
-			queryPanel = new QueryPanel();
-			dataPanel = new DataPanel();
-			JScrollPane dataScrollPane = new JScrollPane(dataPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-					JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			dataScrollPane = new DataScrollPane();
+	    	queryPanel = new QueryPanel(dataScrollPane);
 			
 			splitPane.setTopComponent(queryPanel);
 			splitPane.setBottomComponent(dataScrollPane);

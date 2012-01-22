@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
-
+	
 	<!-- XML parser -->
 	<bean id="domXmlParser" class="lv.lu.mpt.pd2.xml.DomXmlParser">
 		<property name="gameService" ref="gameService" />
@@ -35,6 +35,9 @@
 	</bean>
 	<bean id="gameService" class="lv.lu.mpt.pd2.impl.service.GameServiceImpl">
 		<property name="commonDAO" ref="commonDAO" />
+	</bean>
+	<bean id="statisticsService" class="lv.lu.mpt.pd2.impl.service.StatisticsServiceImpl">
+		<property name="dataSource" ref="dataSource" />
 	</bean>
 
 	<!-- Persistence configuration -->

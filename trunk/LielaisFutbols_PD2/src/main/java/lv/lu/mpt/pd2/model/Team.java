@@ -17,7 +17,9 @@ import org.hibernate.annotations.CascadeType;
 
 @NamedQueries({
 	@NamedQuery(name = JPQLConst.TeamJPQL.QUERY_GET_TEAM,
-			query = "SELECT t FROM Team t WHERE name = :name")
+			query = "SELECT t FROM Team t WHERE name = :name"),
+	@NamedQuery(name = JPQLConst.TeamJPQL.QUERY_GET_ALL_TEAM_NAMES,
+			query = "SELECT t.name FROM Team t")
 })
 @Entity
 public class Team implements PersistentEntity {
