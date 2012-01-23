@@ -26,4 +26,9 @@ public class RefereeServiceImpl extends BaseService implements RefereeService {
 		return result.get(0);
 	}
 
+	@Override
+	public List<Referee> getAllReferees() {
+		return (List<Referee>)getCommonDAO().findAll(Referee.class);
+	}
+
 }

@@ -17,6 +17,10 @@ public interface StatisticsService {
 	
 	Object[][] getTopStrictReferees();
 	
+	Object[][] getTopMostPopularNames();
+	
 	Object[][] getTeamStatistics(String teamName);
+	
+	Object[][] getRefereeStatistics(Long refereeId);
 	
 }

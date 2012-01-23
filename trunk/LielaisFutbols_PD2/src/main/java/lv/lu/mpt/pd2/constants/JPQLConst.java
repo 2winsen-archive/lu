@@ -20,6 +20,7 @@ public final class JPQLConst {
 	
 	public interface RefereeJPQL {
 		String QUERY_GET_REFEREE = "getReferee";
+		String QUERY_GET_ALL_REFEREE_NAMES = "getAllRefereeNames";
 	}
 
 }

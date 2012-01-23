@@ -143,6 +143,24 @@ public class StatisticsServiceImpl implements StatisticsService {
 	}
 	
 	@Override
+	public Object[][] getTopMostPopularNames() {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(QueryConstants.TOP_MOST_POPULAR_NAMES_QUERY);
+
+		Object[][] data = new Object[rows.size()][2];
+		int rowIndex = 0;
+		int colIndex = 0;
+		for (Map<String, Object> row : rows) {
+			data[rowIndex][colIndex] = row.get("firstname");
+			colIndex++;
+			data[rowIndex][colIndex] = row.get("frequency");
+			rowIndex++;
+			colIndex = 0;
+		}
+		return data;
+	}
+	
+	@Override
 	public Object[][] getTeamStatistics(String teamName) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		String sql = 
@@ -196,6 +214,67 @@ public class StatisticsServiceImpl implements StatisticsService {
 			data[rowIndex][colIndex] = parseNullsToInteger(row.get("yellowcardscount"));
 			colIndex++;
 			data[rowIndex][colIndex] = parseNullsToInteger(row.get("redcardscount"));
+			rowIndex++;
+			colIndex = 0;
+		}
+		return data;
+	}
+	
+	@Override
+	public Object[][] getRefereeStatistics(Long refereeId) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		String sql = 
+			"SELECT pl.number, " +
+			       "pl.firstname, " +
+			       "pl.lastname, " +
+			       "pl.ROLE, " +
+			       "t.name as playersTeam, " +
+			       "p.minutes, " +
+			       "p.seconds, " +
+			       "g.DATE, " +
+			       "g.place, " +
+			       "t1.name as team1Name, " +
+			       "t2.name as team2Name " +
+			"FROM   referee AS r " +
+			       "INNER JOIN game AS g " +
+			         "ON g.seniorreferee_id = r.id " +
+			       "INNER JOIN penalty AS p " +
+			         "ON p.game_id = g.id " +
+			       "INNER JOIN player AS pl " +
+			         "ON pl.id = p.player_id " +
+			       "INNER JOIN team AS t " +
+			         "ON pl.team_id = t.id " +
+			       "INNER JOIN team AS t1 " +
+			         "ON t1.id = g.team1_id " +
+			       "INNER JOIN team AS t2 " +
+			         "ON t2.id = g.team2_id " +
+			"WHERE  r.id = "+ refereeId;
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
+		Object[][] data = new Object[rows.size()][11];
+		int rowIndex = 0;
+		int colIndex = 0;
+		for (Map<String, Object> row : rows) {
+			data[rowIndex][colIndex] = row.get("number");
+			colIndex++;
+			data[rowIndex][colIndex] = parseToRole(row.get("ROLE"));
+			colIndex++;
+			data[rowIndex][colIndex] = row.get("firstname");
+			colIndex++;
+			data[rowIndex][colIndex] = row.get("lastname");
+			colIndex++;
+			data[rowIndex][colIndex] = row.get("playersTeam");
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsToInteger(row.get("minutes"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsToInteger(row.get("seconds"));
+			colIndex++;
+			data[rowIndex][colIndex] = row.get("DATE");
+			colIndex++;
+			data[rowIndex][colIndex] = row.get("place");
+			colIndex++;
+			data[rowIndex][colIndex] = row.get("team1Name");
+			colIndex++;
+			data[rowIndex][colIndex] = row.get("team2Name");
 			rowIndex++;
 			colIndex = 0;
 		}
