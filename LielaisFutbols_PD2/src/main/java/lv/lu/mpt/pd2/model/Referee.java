@@ -48,4 +48,9 @@ public class Referee implements PersistentEntity {
 		this.lastName = lastName;
 	}
 	
+	@Override
+	public String toString() {
+		return id + ": " + firstName + " " + lastName;
+	}
+	
 }

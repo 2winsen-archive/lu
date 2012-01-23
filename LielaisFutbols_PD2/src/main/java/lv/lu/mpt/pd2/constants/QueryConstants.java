@@ -203,5 +203,19 @@ public class QueryConstants {
 		    "INNER JOIN penalty AS p " +
 		      "ON p.game_id = g.id " +
 		"GROUP  BY r.id " +
-		"ORDER  BY penalties DESC";  	
+		"ORDER  BY penalties DESC";
+	
+	public static final String TOP_MOST_POPULAR_NAMES_QUERY =
+		"SELECT query.firstname, " +
+		    "COUNT(*) AS frequency " +
+		"FROM   (SELECT id, " +
+		            "firstname " +
+		     "FROM   player " +
+		     "UNION " +
+		     "SELECT id, " +
+		            "firstname " +
+		     "FROM   referee) AS query " +
+		"GROUP  BY query.firstname " +
+		"ORDER  BY frequency DESC   ";
+	
 }

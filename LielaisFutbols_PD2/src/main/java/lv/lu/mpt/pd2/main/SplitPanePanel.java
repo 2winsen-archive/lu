@@ -26,7 +26,7 @@ public class SplitPanePanel extends JPanel {
 		if (splitPane == null) {
 			splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 			splitPane.setOneTouchExpandable(true);
-			splitPane.setDividerLocation(MainFrame.FRAME_HEIGHT / 5);
+			splitPane.setDividerLocation(MainFrame.FRAME_HEIGHT / 4);
 			splitPane.setEnabled(false);
 
 			dataScrollPane = new DataScrollPane();
