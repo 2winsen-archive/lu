@@ -16,4 +16,7 @@ public interface StatisticsService {
 	Object[][] getTopAggressivePlayers();
 	
 	Object[][] getTopStrictReferees();
+	
+	Object[][] getTeamStatistics(String teamName);
+	
 }

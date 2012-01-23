@@ -170,6 +170,12 @@ public class QueryPanel extends JPanel implements ActionListener {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == 1) {
+					
+					Object[] columnNames = {"Number", "Role", "First Name", "Last Name", "Total Games Played", "Total Games Played (Main LineUp)", 
+							"Total Minutes Played", "Total Goals Scored", "Total Assists", "Total Lost Goals", "Average Lost Goals (Per Game)",
+							"Total Yellow Cards", "Total Red Cards"};
+					Object[][] data = statisticsService.getTeamStatistics((String)e.getItem());
+					dataScrollPane.setModel(new DataTableModel(data, columnNames));
 				}
 			}
 		});

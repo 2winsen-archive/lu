@@ -142,6 +142,66 @@ public class StatisticsServiceImpl implements StatisticsService {
 		return data;
 	}
 	
+	@Override
+	public Object[][] getTeamStatistics(String teamName) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		String sql = 
+			"SELECT p.number, " +
+			       "p.ROLE, " +
+			       "p.firstname, " +
+			       "p.lastname, " +
+			       "p.gamesplayed, " +
+			       "p.gamesplayedinmainlineup, " +
+			       "p.minutesplayed, " +
+			       "p.goalscount, " +
+			       "p.assistscount, " +
+			       "IF(p.ROLE = 0, p.goalslostcount, NULL)                     AS " +
+			       "goalslostcount, " +
+			       "IF(p.ROLE = 0, ( p.goalslostcount / p.gamesplayed ), NULL) AS " +
+			       "averagegoalslost, " +
+			       "p.yellowcardscount, " +
+			       "p.redcardscount " +
+			"FROM   player AS p " +
+			       "INNER JOIN team AS t " +
+			         "ON t.id = p.team_id " +
+			"WHERE  t.name = '" + teamName +"' " +
+			"ORDER  BY p.ROLE DESC";	
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
+		Object[][] data = new Object[rows.size()][13];
+		int rowIndex = 0;
+		int colIndex = 0;
+		for (Map<String, Object> row : rows) {
+			data[rowIndex][colIndex] = row.get("number");
+			colIndex++;
+			data[rowIndex][colIndex] = parseToRole(row.get("ROLE"));
+			colIndex++;
+			data[rowIndex][colIndex] = row.get("firstname");
+			colIndex++;
+			data[rowIndex][colIndex] = row.get("lastname");
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsToInteger(row.get("gamesplayed"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsToInteger(row.get("gamesplayedinmainlineup"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsToInteger(row.get("minutesplayed"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsToInteger(row.get("goalscount"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsToInteger(row.get("assistscount"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsEmpty(row.get("goalslostcount"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsEmpty(row.get("averagegoalslost"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsToInteger(row.get("yellowcardscount"));
+			colIndex++;
+			data[rowIndex][colIndex] = parseNullsToInteger(row.get("redcardscount"));
+			rowIndex++;
+			colIndex = 0;
+		}
+		return data;
+	}
+	
 	private Integer parseNullsToInteger(Object value) {
 		if (value == null) {
 			return 0;
@@ -161,6 +221,22 @@ public class StatisticsServiceImpl implements StatisticsService {
 		}
 		DecimalFormat oneDForm = new DecimalFormat(formatPattern);
         return Double.valueOf(oneDForm.format(value));
+	}
+	
+	private String parseNullsEmpty(Object value) {
+		if (value == null) {
+			return "";
+		}
+		return value.toString();
+	}
+
+	private String parseToRole(Object value) {
+		switch ((Integer)value) {
+		case 0: return "Goalkeeper";
+		case 1: return "Defender";
+		case 2: return "Forward";
+		default: return "Not defined";
+		}
 	}
 
 }

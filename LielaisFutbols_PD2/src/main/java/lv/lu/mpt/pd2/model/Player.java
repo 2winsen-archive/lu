@@ -37,20 +37,28 @@ public class Player implements PersistentEntity {
 	@JoinColumn(name = "team_id")
 	private Team team;
 	
-	private Integer gamesPlayed;
+	private Integer gamesPlayed = 0;
 	
-	private Integer gamesPlayedInMainLineUp;
+	private Integer gamesPlayedInMainLineUp = 0;
 	
-	private Integer minutesPlayed;
+	private Integer minutesPlayed = 0;
 	
-	private Integer yellowCardsCount;
+	private Integer yellowCardsCount = 0;
 	
-	private Integer redCardsCount;
+	private Integer redCardsCount = 0;
+	
+	private Integer goalsCount = 0;
+	
+	private Integer goalsLostCount = 0;
+	
+	private Integer assistsCount = 0;
 	
 	@Transient
 	public int startedToPlay = 0;
 	@Transient
 	public boolean changed = false;
+	@Transient
+	public int yellowCardsInCurrentGame = 0;
 	
 	public Long getId() {
 		return id;
@@ -138,6 +146,30 @@ public class Player implements PersistentEntity {
 
 	public void setRedCardsCount(Integer redCardsCount) {
 		this.redCardsCount = redCardsCount;
+	}
+
+	public Integer getGoalsCount() {
+		return goalsCount;
+	}
+
+	public void setGoalsCount(Integer goalsCount) {
+		this.goalsCount = goalsCount;
+	}
+
+	public Integer getGoalsLostCount() {
+		return goalsLostCount;
+	}
+
+	public void setGoalsLostCount(Integer goalsLostCount) {
+		this.goalsLostCount = goalsLostCount;
+	}
+
+	public Integer getAssistsCount() {
+		return assistsCount;
+	}
+
+	public void setAssistsCount(Integer assistsCount) {
+		this.assistsCount = assistsCount;
 	}
 
 	@Override
