@@ -224,10 +224,6 @@ public class DomXmlParser implements XmlParser {
 		// Setting minutes played
 		for (Player p : game.getTeam1LineUp()) {
 			if (!p.changed) {
-				if (p.getMinutesPlayed() == null) {
-					p.setMinutesPlayed(0);
-				}
-
 				int tempEndMinute = (isExtraTime) ? endMinute : 90;
 				if (p.startedToPlay == 0) {
 					p.setMinutesPlayed(p.getMinutesPlayed() + tempEndMinute);	
@@ -261,7 +257,7 @@ public class DomXmlParser implements XmlParser {
 				break;
 			}
 		}
-		g.setGoalkeeperLost(keeper);
+		g.setGoalkeeperLost(keeper);		
 		for (Change c : game.getChanges()) {
 			if (c.getPlayerFrom().equals(keeper)) {
 				if (isGoalAfterChange(g, c)) {
@@ -270,7 +266,7 @@ public class DomXmlParser implements XmlParser {
 				}
 			}
 		}
-		g.setGoalkeeperLost(keeper);
+		keeper.setGoalsLostCount(keeper.getGoalsLostCount() + 1);
 	}
 
 	private boolean isGoalAfterChange(Goal g, Change c) {
@@ -444,9 +440,9 @@ public class DomXmlParser implements XmlParser {
 				if (XmlConsts.Player.ATTR_NUMBER.equals(attrib.getNodeName())) {
 					Player p = getPlayerByNumber(Integer.parseInt(attrib.getNodeValue().trim()), team.getPlayers());
 					// Total games played
-					p.setGamesPlayed( (p.getGamesPlayed() == null) ? 1 : p.getGamesPlayed() + 1 );
+					p.setGamesPlayed(p.getGamesPlayed() + 1);
 					// Games played in main lineup
-					p.setGamesPlayedInMainLineUp( (p.getGamesPlayedInMainLineUp() == null) ? 1 : p.getGamesPlayedInMainLineUp() + 1 );
+					p.setGamesPlayedInMainLineUp(p.getGamesPlayedInMainLineUp() + 1);
 					lineUp.add(p);
 				}
 			}
@@ -483,7 +479,9 @@ public class DomXmlParser implements XmlParser {
 
 				// Nr
 				if (XmlConsts.Goal.ATTR_SCORER_NUMBER.equals(attrib.getNodeName())) {
-					goal.setPlayer(getPlayerByNumber(Integer.parseInt(attrib.getNodeValue().trim()), team.getPlayers()));
+					Player p = getPlayerByNumber(Integer.parseInt(attrib.getNodeValue().trim()), team.getPlayers());
+					p.setGoalsCount(p.getGoalsCount() + 1);
+					goal.setPlayer(p);
 					continue;
 				}
 
@@ -511,12 +509,11 @@ public class DomXmlParser implements XmlParser {
 
 					NamedNodeMap assistantAttribs = assistantChild.getAttributes();
 					for (int k = 0; k < assistantAttribs.getLength(); k++) {
-
 						Node assistantAttrib = assistantAttribs.item(k);
-
 						if (XmlConsts.Goal.ATTR_SCORER_NUMBER.equals(assistantAttrib.getNodeName())) {
-
-							assistants.add(getPlayerByNumber(Integer.parseInt(assistantAttrib.getNodeValue()), team.getPlayers()));
+							Player p = getPlayerByNumber(Integer.parseInt(assistantAttrib.getNodeValue()), team.getPlayers());
+							p.setAssistsCount(p.getAssistsCount() + 1);
+							assistants.add(p);
 							continue;
 						}
 					}
@@ -570,7 +567,14 @@ public class DomXmlParser implements XmlParser {
 				
 				// Nr
 				if (XmlConsts.Penalty.ATTR_NUMBER.equals(attrib.getNodeName())) {
-					penalty.setPlayer(getPlayerByNumber(Integer.parseInt(attrib.getNodeValue()), team.getPlayers()));
+					Player p = getPlayerByNumber(Integer.parseInt(attrib.getNodeValue()), team.getPlayers()); 
+					p.yellowCardsInCurrentGame++;
+					p.setYellowCardsCount(p.getYellowCardsCount() + 1);
+					if (p.yellowCardsInCurrentGame == 2) {
+						p.setRedCardsCount(p.getRedCardsCount() + 1);
+						p.setYellowCardsCount(p.getYellowCardsCount() - 1);
+					}
+					penalty.setPlayer(p);
 					continue;
 				}
 			}
@@ -624,22 +628,18 @@ public class DomXmlParser implements XmlParser {
 				// Nr2
 				if (XmlConsts.Change.ATTR_NUMBER_TO.equals(attrib.getNodeName())) {
 					Player p = getPlayerByNumber(Integer.parseInt(attrib.getNodeValue()), team.getPlayers());
-					if (p.getGamesPlayed() == null) {
-						p.setGamesPlayed(1);	
-					} else {
-						boolean wasInLineUp = false;
-						for (Player lineupPlayer : team1 ? game.getTeam1LineUp() : game.getTeam2LineUp()) {
-							if (p.equals(lineupPlayer)) {
-								wasInLineUp = true;
-								break;
-							}
-						}
-						if (!wasInLineUp) {
-							p.setGamesPlayed(p.getGamesPlayed() + 1);
+					boolean wasInLineUp = false;
+					for (Player lineupPlayer : team1 ? game.getTeam1LineUp() : game.getTeam2LineUp()) {
+						if (p.equals(lineupPlayer)) {
+							wasInLineUp = true;
+							break;
 						}
 					}
+					if (!wasInLineUp) {
+						p.setGamesPlayed(p.getGamesPlayed() + 1);
+					}
 					p.startedToPlay = change.getMinutes();
-					
+
 
 					change.setPlayerTo(p);
 					continue;

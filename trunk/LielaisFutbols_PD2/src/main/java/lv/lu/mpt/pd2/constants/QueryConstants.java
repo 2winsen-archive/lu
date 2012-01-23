@@ -150,72 +150,33 @@ public class QueryConstants {
          "ORDER BY totalpoints DESC";
 	
 	public static final String TOP_10_SCORERS_QUERY =
-		"SELECT players.id, " +
-		    "players.firstname, " +
-		    "players.lastname, " +
-		    "t.name, " +
-		    "scorersquery.goals, " +
-		    "assistantsquery.assists " +
-		"FROM   player AS players " +
-		    "JOIN team AS t " +
-		      "ON t.id = players.team_id " +
-		    "LEFT JOIN (SELECT p.id, " +
-		                      "p.firstname, " +
-		                      "p.lastname, " +
-		                      "COUNT(*) AS goals " +
-		               "FROM   player AS p " +
-		                      "INNER JOIN goal AS g " +
-		                        "ON p.id = g.player_id " +
-		               "GROUP  BY p.id " +
-		               "ORDER  BY goals DESC) AS scorersquery " +
-		      "ON players.id = scorersquery.id " +
-		    "LEFT JOIN (SELECT p.id, " +
-		                      "p.firstname, " +
-		                      "p.lastname, " +
-		                      "COUNT(*) AS assists " +
-		               "FROM   player AS p " +
-		                      "INNER JOIN goal_assistant AS ga " +
-		                        "ON ga.player_id = p.id " +
-		               "GROUP  BY p.id) AS assistantsquery " +
-		      "ON players.id = assistantsquery.id " +
-		"GROUP  BY players.id " +
-		"ORDER  BY scorersquery.goals DESC, " +
-		       "assistantsquery.assists DESC " +
-		"LIMIT  10";
+		"SELECT p.id, " +
+		       "p.firstname, " +
+		       "p.lastname, " +
+		       "t.name, " +
+		       "p.goalscount   AS goals, " +
+		       "p.assistscount AS assists " +
+		"FROM   player AS p " +
+		       "INNER JOIN team AS t " +
+		         "ON t.id = p.team_id " +
+		"WHERE  gamesplayed > 0 " +
+		"ORDER  BY p.goalscount DESC, " +
+		          "p.assistscount DESC " +
+		"LIMIT  10";  
 	
 	public static final String TOP_5_GOALKEEPERS_QUERY =
-		"SELECT query.id, " +
-		       "query.firstname, " +
-		       "query.lastname, " +
-		       "query.name, " +
-		       "( goalslostquery.goalslost / query.gamesplayed ) AS " +
-		       "averagegoalslostpergame " +
-		"FROM   (SELECT p.id, " +
-		               "p.firstname, " +
-		               "p.lastname, " +
-		               "t.name, " +
-		               "p.gamesplayed " +
-		        "FROM   player AS p " +
-		               "LEFT JOIN team AS t " +
-		                 "ON p.team_id = t.id " +
-		               "LEFT JOIN goal AS g " +
-		                 "ON g.goalkeeperlost_id = p.id " +
-		        "WHERE  p.ROLE = 0 " +
-		               "AND gamesplayed IS NOT NULL " +
-		        "GROUP  BY p.id) AS query " +
-		       "LEFT JOIN (SELECT p.id, " +
-		                         "p.firstname, " +
-		                         "p.lastname, " +
-		                         "COUNT(*) AS goalslost " +
-		                  "FROM   player AS p " +
-		                         "INNER JOIN goal AS g " +
-		                           "ON g.goalkeeperlost_id = p.id " +
-		                  "WHERE  p.ROLE = 0 " +
-		                         "AND gamesplayed IS NOT NULL " +
-		                  "GROUP  BY p.id) AS goalslostquery " +
-		         "ON query.id = goalslostquery.id " +
-		"ORDER  BY averagegoalslostpergame " +
-		"LIMIT  5";
+		"SELECT p.id, " +
+		       "p.firstname, " +
+		       "p.lastname, " +
+		       "t.name, " +
+		       "( p.goalslostcount / p.gamesplayed ) AS averagegoalslostpergame " +
+		"FROM   player AS p " +
+		       "INNER JOIN team AS t " +
+		         "ON t.id = p.team_id " +
+		"WHERE  p.ROLE = 0 " +
+		       "AND gamesplayed > 0 " +
+		"ORDER  BY averagegoalslostpergame ASC " +
+		"LIMIT  5";  
 
 	public static final String TOP_AGGRESSIVE_PLAYERS_QUERY =
 		"SELECT pla.id, " +
