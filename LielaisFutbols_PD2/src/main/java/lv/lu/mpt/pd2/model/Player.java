@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 
 import lv.lu.mpt.pd2.constants.JPQLConst;
 import lv.lu.mpt.pd2.interfaces.PersistentEntity;
@@ -37,6 +38,19 @@ public class Player implements PersistentEntity {
 	private Team team;
 	
 	private Integer gamesPlayed;
+	
+	private Integer gamesPlayedInMainLineUp;
+	
+	private Integer minutesPlayed;
+	
+	private Integer yellowCardsCount;
+	
+	private Integer redCardsCount;
+	
+	@Transient
+	public int startedToPlay = 0;
+	@Transient
+	public boolean changed = false;
 	
 	public Long getId() {
 		return id;
@@ -92,6 +106,38 @@ public class Player implements PersistentEntity {
 
 	public void setGamesPlayed(Integer gamesPlayed) {
 		this.gamesPlayed = gamesPlayed;
+	}
+
+	public Integer getGamesPlayedInMainLineUp() {
+		return gamesPlayedInMainLineUp;
+	}
+
+	public void setGamesPlayedInMainLineUp(Integer gamesPlayedInMainLineUp) {
+		this.gamesPlayedInMainLineUp = gamesPlayedInMainLineUp;
+	}
+
+	public Integer getMinutesPlayed() {
+		return minutesPlayed;
+	}
+
+	public void setMinutesPlayed(Integer minutesPlayed) {
+		this.minutesPlayed = minutesPlayed;
+	}
+
+	public Integer getYellowCardsCount() {
+		return yellowCardsCount;
+	}
+
+	public void setYellowCardsCount(Integer yellowCardsCount) {
+		this.yellowCardsCount = yellowCardsCount;
+	}
+
+	public Integer getRedCardsCount() {
+		return redCardsCount;
+	}
+
+	public void setRedCardsCount(Integer redCardsCount) {
+		this.redCardsCount = redCardsCount;
 	}
 
 	@Override

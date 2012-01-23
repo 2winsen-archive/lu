@@ -45,6 +45,8 @@ public class DomXmlParser implements XmlParser {
 	
 	private boolean isExtraTime = false;
 	
+	private int endMinute = 0;
+	
 	private PlayerService playerService;
 	
 	private RefereeService refereeService;
@@ -142,7 +144,6 @@ public class DomXmlParser implements XmlParser {
 		}
 		
 		Game tempGame = gameService.getGame(game);
-		// If such game already exists set game to null and return
 		if (tempGame != null) {
 			game = null;
 			return;
@@ -218,6 +219,22 @@ public class DomXmlParser implements XmlParser {
 		for (Goal g : team2Goals) {
 			setTeamWhoLostGoal(g);
 			setGoalkeeperWhoLostGoal(g);
+		}
+		
+		// Setting minutes played
+		for (Player p : game.getTeam1LineUp()) {
+			if (!p.changed) {
+				if (p.getMinutesPlayed() == null) {
+					p.setMinutesPlayed(0);
+				}
+
+				int tempEndMinute = (isExtraTime) ? endMinute : 90;
+				if (p.startedToPlay == 0) {
+					p.setMinutesPlayed(p.getMinutesPlayed() + tempEndMinute);	
+				} else {
+					p.setMinutesPlayed(p.getMinutesPlayed() + (tempEndMinute - p.startedToPlay));
+				}
+			}
 		}
 	}
 
@@ -349,7 +366,7 @@ public class DomXmlParser implements XmlParser {
 				if (game.getChanges() != null) {
 					changes.addAll(game.getChanges());
 				}
-				changes.addAll(extractChanges(child, team));
+				changes.addAll(extractChanges(child, team, team1));
 				game.setChanges(changes);
 				continue;
 			}
@@ -426,11 +443,10 @@ public class DomXmlParser implements XmlParser {
 				// Nr
 				if (XmlConsts.Player.ATTR_NUMBER.equals(attrib.getNodeName())) {
 					Player p = getPlayerByNumber(Integer.parseInt(attrib.getNodeValue().trim()), team.getPlayers());
-					if (p.getGamesPlayed() == null) {
-						p.setGamesPlayed(1);	
-					} else {
-						p.setGamesPlayed(p.getGamesPlayed() + 1);
-					}
+					// Total games played
+					p.setGamesPlayed( (p.getGamesPlayed() == null) ? 1 : p.getGamesPlayed() + 1 );
+					// Games played in main lineup
+					p.setGamesPlayedInMainLineUp( (p.getGamesPlayedInMainLineUp() == null) ? 1 : p.getGamesPlayedInMainLineUp() + 1 );
 					lineUp.add(p);
 				}
 			}
@@ -565,7 +581,7 @@ public class DomXmlParser implements XmlParser {
 	}
 	
 	
-	private Set<Change> extractChanges(Node node, Team team) {
+	private Set<Change> extractChanges(Node node, Team team, Boolean team1) {
 
 		Set<Change> changies = new HashSet<Change>();
 
@@ -594,7 +610,14 @@ public class DomXmlParser implements XmlParser {
 				
 				// Nr1
 				if (XmlConsts.Change.ATTR_NUMBER_FROM.equals(attrib.getNodeName())) {
-					change.setPlayerFrom(getPlayerByNumber(Integer.parseInt(attrib.getNodeValue()), team.getPlayers()));
+					Player p = getPlayerByNumber(Integer.parseInt(attrib.getNodeValue()), team.getPlayers());
+					// Setting minutes played
+					p.setMinutesPlayed( 
+							(p.getMinutesPlayed() != null) ? 
+									p.getMinutesPlayed() + (change.getMinutes() - p.startedToPlay) : 
+										change.getMinutes() - p.startedToPlay );									
+					change.setPlayerFrom(p);
+					p.changed = true;
 					continue;
 				}
 				
@@ -604,8 +627,20 @@ public class DomXmlParser implements XmlParser {
 					if (p.getGamesPlayed() == null) {
 						p.setGamesPlayed(1);	
 					} else {
-						p.setGamesPlayed(p.getGamesPlayed() + 1);
+						boolean wasInLineUp = false;
+						for (Player lineupPlayer : team1 ? game.getTeam1LineUp() : game.getTeam2LineUp()) {
+							if (p.equals(lineupPlayer)) {
+								wasInLineUp = true;
+								break;
+							}
+						}
+						if (!wasInLineUp) {
+							p.setGamesPlayed(p.getGamesPlayed() + 1);
+						}
 					}
+					p.startedToPlay = change.getMinutes();
+					
+
 					change.setPlayerTo(p);
 					continue;
 				}
@@ -644,6 +679,7 @@ public class DomXmlParser implements XmlParser {
 		if (minutes > 90 || 
 				(minutes == 90 && seconds > 0)) {
 			isExtraTime = true;
+			endMinute = minutes;
 		}		
 		return new Integer[]{minutes, seconds};
 	}

@@ -27,13 +27,15 @@ public class UploadServiceImpl extends BaseService implements UploadService {
 	public void upload(File[] files) {
 
 		for (File file : files) {
-			InputStream xml = null;
-			try {
-				xml = new FileInputStream(file);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+			if (file.isFile()) {
+				InputStream xml = null;
+				try {
+					xml = new FileInputStream(file);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				parseAndSave(xml);
 			}
-			parseAndSave(xml);
 		}
 
 	}
