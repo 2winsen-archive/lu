@@ -39,9 +39,9 @@ public class DomXmlParser implements XmlParser {
 	
 	private Team team2;
 	
-	private Set<Goal> team1Goals;
+	private Set<Goal> team1Goals = new HashSet<Goal>();
 	
-	private Set<Goal> team2Goals;
+	private Set<Goal> team2Goals = new HashSet<Goal>();
 	
 	private boolean isExtraTime = false;
 	
