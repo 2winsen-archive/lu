@@ -1,6 +1,7 @@
 package lv.lu.mpt.pd2.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -91,15 +92,15 @@ public class Game implements PersistentEntity {
 	
 	@OneToMany(mappedBy="game")
 	@Cascade(CascadeType.ALL)
-	private Set<Goal> goals;
+	private Set<Goal> goals = new HashSet<Goal>();
 	
 	@OneToMany(mappedBy="game")
 	@Cascade(CascadeType.ALL)
-	private Set<Penalty> penalties;
+	private Set<Penalty> penalties  = new HashSet<Penalty>();
 	
 	@OneToMany(mappedBy="game")
 	@Cascade(CascadeType.ALL)
-	private Set<Change> changes;
+	private Set<Change> changes  = new HashSet<Change>();
 
 	public Long getId() {
 		return id;
