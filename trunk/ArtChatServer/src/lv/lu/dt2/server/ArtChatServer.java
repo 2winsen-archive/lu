@@ -18,7 +18,7 @@ import java.util.Vector;
  */
 public class ArtChatServer {
 
-    private static final int PORT_NUMBER = 443;
+    private static final int PORT_NUMBER = 5656;
 
     private ServerSocket serverSocket;
     private Socket messageSocket;
