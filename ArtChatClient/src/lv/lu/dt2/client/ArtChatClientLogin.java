@@ -60,7 +60,7 @@ public class ArtChatClientLogin extends JFrame implements ActionListener {
 		hostTextField = new JTextField();
 		// x = 130, y = 85
 		hostTextField.setBounds(20 + 118, 20 + 35 + 30, 150, 35);
-		hostTextField.setText("localhost:5656"); // TODO: REMOVE!!!
+		hostTextField.setText("localhost:6329"); // TODO: REMOVE!!!
 		panel.add(hostTextField);
 		
 		nicknameLabel = new JLabel(LOGIN_LABEL);
