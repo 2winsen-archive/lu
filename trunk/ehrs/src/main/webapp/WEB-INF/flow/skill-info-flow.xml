@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<input-mapper>
+		<input-attribute name="id" />
+	</input-mapper>
+
+	<start-state idref="skill-info-screen" />
+
+	<action-state id="parameters-uninit-action">
+		<set attribute="result" value="0" scope="flow" />
+		<transition to="skill-info-screen" />
+	</action-state>
+
+	<view-state id="skill-info-screen" view="skill_info">
+		<render-actions>
+			<!-- Getting user -->
+			<bean-action bean="skillDao" method="getRecord">
+				<method-arguments>
+					<argument expression="flowScope.id" />
+				</method-arguments>
+				<method-result name="skill" scope="flow" />
+			</bean-action>
+			<!-- Getting group by id -->
+			<bean-action bean="groupDao" method="getRecord">
+				<method-arguments>
+					<argument expression="flowScope.skill.groupId" />
+				</method-arguments>
+				<method-result name="group" />
+			</bean-action>
+		</render-actions>
+		<transition on="delete" to="delete-confirmation-action" />
+		<transition on="delete-confirmed" to="delete-action" />
+		<transition on="change" to="change-view" />
+	</view-state>
+
+	<action-state id="delete-confirmation-action">
+		<set attribute="delete" value="1" scope="flow" />
+		<transition to="skill-info-screen" />
+	</action-state>
+
+	<action-state id="delete-action">
+		<bean-action bean="skillDao" method="removeRecord">
+			<method-arguments>
+				<argument expression="flowScope.id" />
+			</method-arguments>
+			<method-result name="deleteSignal"/>
+		</bean-action>
+		<transition to="finish" />
+	</action-state>
+
+	<view-state id="change-view" view="skill_change">
+		<render-actions>
+			<action bean="changeSkillFormAction" method="setupForm" />
+			<bean-action bean="skillHelper" method="populateGroup">
+				<method-result name="groups" />
+			</bean-action>
+		</render-actions>
+		<transition to="change-action" on="change">
+			<action bean="changeSkillFormAction" method="bindAndValidate" />
+		</transition>
+		<transition on="change-another" to="parameters-uninit-action" />
+	</view-state>
+
+	<action-state id="change-action">
+		<bean-action bean="skillHelper" method="updateSkill">
+			<method-arguments>
+				<argument expression="conversationScope.skill" />
+				<argument expression="flowScope.skill" />
+			</method-arguments>
+			<method-result name="result" scope="flow" />
+		</bean-action>
+		<transition to="change-view" />
+	</action-state>
+
+	<end-state id="finish" />
+
+	<import resource="../beans/skill-beans.xml" />
+
+</flow>

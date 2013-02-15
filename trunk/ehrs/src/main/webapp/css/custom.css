@@ -1,0 +1,102 @@
+
+/***************
+Custom css file
+****************/
+
+.error {
+	color: red;	
+}
+
+.confirm {
+	color: #3399FF;	
+}
+
+/* eHRS title */
+#logo h1 {
+	float: left;
+	padding-top: 30px;
+	letter-spacing: -3px;
+	text-transform: none !important;
+	font-size: 3em;
+}
+
+/* greeting bar */
+.greeting {
+	float: right;
+	letter-spacing: -1px;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 16px;	
+}
+
+#logo h2 {
+	float: right;
+	padding-top: 25px;
+	letter-spacing: -1px;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+#logout {
+	float: right;
+	text-transform: none;
+	font-size: 14px;	
+}
+
+#logout:HOVER {
+	color: #B9B9B9;
+}
+
+select {
+	width: 197px;
+}
+
+.results {
+	padding-left: 25px;
+}
+
+.results table {
+	border-collapse: collapse;
+	border-color: #737373;
+}
+
+.results table tr td {
+	height: 25px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.header th {
+	color: #3399FF;
+	font-size: 15px;
+	border-width: 1px;
+	height: 35px;
+}
+
+.info {
+	color: #737373;
+	font-weight: bold;
+	padding-left: 100px;
+}
+
+.table_title {
+	font-size: 14px;
+	color: #737373;
+	font-weight: bold;
+	height: 35px;
+	text-align: left;
+	padding-top: 18px;
+	padding-bottom: 8px;
+}
+
+.actions {
+	float: right;
+}
+
+#message_text {
+	font-size: 16px;
+	text-align: justify;
+	font-style: italic;
+}
+

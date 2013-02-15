@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="message-search-action" />
+
+	<action-state id="message-search-action">
+		<bean-action bean="messageHelper" method="viewMessages">
+			<method-result name="messages" scope="flow" />
+		</bean-action>
+		<transition to="view-message-screen" />
+	</action-state>
+
+	<view-state id="view-message-screen" view="message_view">
+		<transition on="select" to="browse-message" />
+	</view-state>
+
+	<subflow-state id="browse-message" flow="message-info-flow">
+		<attribute-mapper>
+			<input-mapper>
+				<mapping source="requestParameters.id" target="id" from="string" to="long" />
+			</input-mapper>
+		</attribute-mapper>
+		<transition on="finish" to="message-search-action" />
+	</subflow-state>
+
+	<import resource="../beans/message-beans.xml" />
+
+</flow>

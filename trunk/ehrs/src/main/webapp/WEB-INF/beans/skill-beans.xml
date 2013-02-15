@@ -1,0 +1,35 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="addSkillFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.skill.Skill" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.skill.AddSkillFormValidator">
+				<property name="skillDao" ref="skillDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="viewSkillsFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.skill.Skill" />
+		<property name="formObjectScope" value="CONVERSATION" />
+	</bean>
+
+	<bean id="changeSkillFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.skill.Skill" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.skill.ChangeSkillValidator">
+				<property name="skillDao" ref="skillDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="skillHelper" class="lv.kvd.lu.skill.SkillHelper">
+		<property name="skillDao" ref="skillDao" />
+		<property name="groupDao" ref="groupDao" />
+	</bean>
+
+</beans>

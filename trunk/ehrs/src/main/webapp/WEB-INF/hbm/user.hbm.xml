@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+	<class name="lv.kvd.lu.user.User" table="users">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="enabled" />
+		<property name="authority" />
+		<property name="name" />
+		<property name="surname" />
+		<property name="username" />
+		<property name="email" />
+		<property name="password" />
+		<property name="countryId" column="country_id" />
+		<property name="city" />
+		<property name="zip" />
+		<property name="address" />
+		<property name="salary" />
+		<property name="positionId" column="position_id" />
+		<property name="officeId" column="office_id" />
+		<property name="projectId" column="project_id" />
+		<property name="timestamp" type="timestamp" />
+	</class>
+
+</hibernate-mapping>

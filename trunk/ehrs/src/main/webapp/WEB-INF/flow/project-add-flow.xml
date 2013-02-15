@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="add-project-screen" />
+
+	<view-state id="add-project-screen" view="project_add">
+		<render-actions>
+			<action bean="addProjectFormAction" method="setupForm" />
+		</render-actions>
+		<transition to="create-action" on="create">
+			<action bean="addProjectFormAction" method="bindAndValidate" />
+		</transition>
+	</view-state>
+	
+	<action-state id="create-action">
+		<bean-action bean="projectHelper" method="addNewProject">
+			<method-arguments>
+				<argument expression="conversationScope.project" />
+			</method-arguments>
+			<method-result name="result" scope="flow"/>
+		</bean-action>
+		<transition to="add-project-screen" />
+	</action-state>
+	
+	<import resource="../beans/project-beans.xml" />
+
+</flow>          
+               

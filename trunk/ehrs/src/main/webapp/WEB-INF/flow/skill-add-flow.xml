@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="add-skill-screen" />
+
+	<view-state id="add-skill-screen" view="skill_add">
+		<render-actions>
+			<action bean="addSkillFormAction" method="setupForm" />
+			<bean-action bean="skillHelper" method="populateGroup">
+				<method-result name="groups" />
+			</bean-action>
+		</render-actions>
+		<transition to="create-action" on="create">
+			<action bean="addSkillFormAction" method="bindAndValidate" />
+		</transition>
+	</view-state>
+
+	<action-state id="create-action">
+		<bean-action bean="skillHelper" method="addNewSkill">
+			<method-arguments>
+				<argument expression="conversationScope.skill" />
+			</method-arguments>
+			<method-result name="result" scope="flow" />
+		</bean-action>
+		<transition to="add-skill-screen" />
+	</action-state>
+
+	<import resource="../beans/skill-beans.xml" />
+
+</flow>          

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<input-mapper>
+		<input-attribute name="id" />
+	</input-mapper>
+
+	<start-state idref="user-info-screen" />
+
+	<action-state id="parameters-uninit-action">
+		<set attribute="result" value="0" scope="flow" />
+		<transition to="user-info-screen" />
+	</action-state>
+
+	<view-state id="user-info-screen" view="user_info">
+		<render-actions>
+			<!-- Getting user -->
+			<bean-action bean="userDao" method="getRecord">
+				<method-arguments>
+					<argument expression="flowScope.id" />
+				</method-arguments>
+				<method-result name="user" scope="flow" />
+			</bean-action>
+			<!-- Getting country by id -->
+			<bean-action bean="countryDao" method="getRecord">
+				<method-arguments>
+					<argument expression="flowScope.user.countryId" />
+				</method-arguments>
+				<method-result name="country" />
+			</bean-action>
+			<!-- Getting position by id -->
+			<bean-action bean="positionDao" method="getRecord">
+				<method-arguments>
+					<argument expression="flowScope.user.positionId" />
+				</method-arguments>
+				<method-result name="position" />
+			</bean-action>
+			<!-- Getting office by id -->
+			<bean-action bean="officeDao" method="getRecord">
+				<method-arguments>
+					<argument expression="flowScope.user.officeId" />
+				</method-arguments>
+				<method-result name="office" scope="flow" />
+			</bean-action>
+			<bean-action bean="countryDao" method="getRecord">
+				<method-arguments>
+					<argument expression="flowScope.office.countryId" />
+				</method-arguments>
+				<method-result name="officeCountry" />
+			</bean-action>
+			<!-- Getting project by id -->
+			<bean-action bean="projectDao" method="getRecord">
+				<method-arguments>
+					<argument expression="flowScope.user.projectId" />
+				</method-arguments>
+				<method-result name="project" />
+			</bean-action>
+		</render-actions>
+		<transition on="delete" to="delete-confirmation-action" />
+		<transition on="delete-confirmed" to="delete-action" />
+		<transition on="change" to="change-view" />
+		<transition on="changeAdd" to="change-add-view" />
+		<transition on="changeSkill" to="change-skill-view" />
+		<transition on="viewSkills" to="view-skill-view" />
+	</view-state>
+
+	<action-state id="delete-confirmation-action">
+		<set attribute="delete" value="1" scope="flow" />
+		<transition to="user-info-screen" />
+	</action-state>
+
+	<action-state id="delete-action">
+		<bean-action bean="userDao" method="removeRecord">
+			<method-arguments>
+				<argument expression="flowScope.id" />
+			</method-arguments>
+			<method-result name="deleteSignal"/>
+		</bean-action>
+		<transition to="finish" />
+	</action-state>
+
+	<view-state id="change-view" view="user_change">
+		<render-actions>
+			<action bean="changeUserFormAction" method="setupForm" />
+			<bean-action bean="userHelper" method="populateEnabled">
+				<method-result name="trueFalse" />
+			</bean-action>
+			<bean-action bean="userHelper" method="populateUserType">
+				<method-result name="authorities" />
+			</bean-action>
+			<bean-action bean="userHelper" method="populateCountry">
+				<method-result name="countries" />
+			</bean-action>
+		</render-actions>
+		<transition to="change-action" on="change">
+			<action bean="changeUserFormAction" method="bindAndValidate" />
+		</transition>
+		<transition on="change-another" to="parameters-uninit-action" />
+	</view-state>
+
+	<action-state id="change-action">
+		<bean-action bean="userHelper" method="updateUser">
+			<method-arguments>
+				<argument expression="conversationScope.addUserForm" />
+				<argument expression="flowScope.user" />
+			</method-arguments>
+			<method-result name="result" scope="flow" />
+		</bean-action>
+		<transition to="change-view" />
+	</action-state>
+
+	<view-state id="change-add-view" view="user_changeAdd">
+		<render-actions>
+			<action bean="changeAddUserFormAction" method="setupForm" />
+			<bean-action bean="userHelper" method="populatePosition">
+				<method-result name="positions" />
+			</bean-action>
+			<bean-action bean="userHelper" method="populateOffice">
+				<method-result name="offices" />
+			</bean-action>
+			<bean-action bean="userHelper" method="populateProject">
+				<method-result name="projects" />
+			</bean-action>
+		</render-actions>
+		<transition to="change-action-add" on="change">
+			<action bean="changeAddUserFormAction" method="bindAndValidate" />
+		</transition>
+		<transition on="change-another" to="parameters-uninit-action" />
+	</view-state>
+	
+	<action-state id="change-action-add">
+		<bean-action bean="userHelper" method="updateUserAdd">
+			<method-arguments>
+				<argument expression="conversationScope.addUserForm" />
+				<argument expression="flowScope.user" />
+			</method-arguments>
+			<method-result name="result" scope="flow" />
+		</bean-action>
+		<transition to="change-add-view" />
+	</action-state>
+	
+	<view-state id="change-skill-view" view="user_change_skills">
+		<render-actions>
+			<action bean="changeUserSkillFormAction" method="setupForm" />
+			<bean-action bean="skillHelper" method="populateGroup">
+				<method-result name="groups" />
+			</bean-action>
+		</render-actions>
+		<!-- Pressed change -->		
+		<transition to="change-skill-action" on="change">
+			<action bean="changeUserSkillFormAction" method="bindAndValidate" />
+		</transition>
+		<transition on="change-another" to="parameters-uninit-action" />
+		<!-- Pressed update -->
+		<transition to="update-action" on="update">
+			<action bean="changeUserSkillFormAction" method="bind" />
+		</transition>
+	</view-state>
+	
+	<action-state id="update-action">
+		<bean-action bean="skillHelper" method="populateSkills">
+			<method-arguments>
+				<argument expression="${conversationScope.userSkills.groupId}"/>
+			</method-arguments>
+			<method-result name="skills" scope="flow"/>
+		</bean-action>
+		<transition to="change-skill-view" />
+	</action-state>
+	
+	<action-state id="change-skill-action">
+		<bean-action bean="userHelper" method="addUserSkill">
+			<method-arguments>
+				<argument expression="${conversationScope.userSkills}"/>
+				<argument expression="flowScope.user"/>
+			</method-arguments>
+			<method-result name="result" scope="flow"/>
+		</bean-action>
+		<transition to="change-skill-view" />
+	</action-state>
+	
+	<view-state id="view-skill-view" view="user_view_skills">
+		<render-actions>
+			<bean-action bean="userHelper" method="viewUserSkills">
+				<method-arguments>
+					<argument expression="flowScope.user.id"/>
+				</method-arguments>
+				<method-result name="userSkillsData" scope="flow"/>
+			</bean-action>
+			<bean-action bean="skillHelper" method="populateGroup">
+				<method-result name="groups" />
+			</bean-action>
+		</render-actions>
+		<transition on="return" to="user-info-screen" />
+		<transition on="deleteSkill" to="delete-skill-action" />
+	</view-state>
+	
+	<action-state id="delete-skill-action">
+		<bean-action bean="userSkillsDao" method="removeRecord">
+			<method-arguments>
+				<argument expression="${requestParameters.id}" />
+			</method-arguments>
+		</bean-action>
+		<transition to="view-skill-view" />
+	</action-state>
+	
+	<end-state id="finish" />
+
+	<import resource="../beans/user-beans.xml" />
+
+</flow>
+               
