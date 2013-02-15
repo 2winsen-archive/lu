@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="add-user-screen" />
+
+	<view-state id="add-user-screen" view="user_add">
+		<render-actions>
+			<action bean="addUserFormAction" method="setupForm" />
+			<bean-action bean="userHelper" method="populateEnabled">
+				<method-result name="trueFalse" />
+			</bean-action>
+			<bean-action bean="userHelper" method="populateUserType">
+				<method-result name="authorities" />
+			</bean-action>
+			<bean-action bean="userHelper" method="populateCountry">
+				<method-result name="countries" />
+			</bean-action>
+		</render-actions>
+		<transition to="create-action" on="create">
+			<action bean="addUserFormAction" method="bindAndValidate" />
+		</transition>
+	</view-state>
+
+	<action-state id="create-action">
+		<bean-action bean="userHelper" method="addNewUser">
+			<method-arguments>
+				<argument expression="conversationScope.addUserForm" />
+			</method-arguments>
+			<method-result name="result" scope="flow"/>
+		</bean-action>
+		<transition to="add-user-screen" />
+	</action-state>
+
+	<import resource="../beans/user-beans.xml" />
+
+</flow>          
+               

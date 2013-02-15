@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<input-mapper>
+		<input-attribute name="id" />
+	</input-mapper>
+
+	<start-state idref="message-info-screen" />
+
+	<action-state id="parameters-uninit-action">
+		<set attribute="result" value="0" scope="flow" />
+		<transition to="message-info-screen" />
+	</action-state>
+
+	<view-state id="message-info-screen" view="message_info">
+		<render-actions>
+			<!-- Getting user -->
+			<bean-action bean="messageDao" method="getRecord">
+				<method-arguments>
+					<argument expression="flowScope.id" />
+				</method-arguments>
+				<method-result name="message" scope="flow" />
+			</bean-action>
+			<bean-action bean="messageHelper" method="setRead">
+				<method-arguments>
+					<argument expression="flowScope.message"/>
+				</method-arguments>
+			</bean-action>
+			<bean-action bean="messageHelper" method="hasNewMessages">
+				<method-result name="res" scope="flow"/>
+			</bean-action>
+		</render-actions>
+		<transition on="delete" to="delete-confirmation-action" />
+		<transition on="delete-confirmed" to="delete-action" />
+		<transition on="return" to="finish" />
+	</view-state>
+
+	<action-state id="delete-confirmation-action">
+		<set attribute="delete" value="1" scope="flow" />
+		<transition to="message-info-screen" />
+	</action-state>
+
+	<action-state id="delete-action">
+		<bean-action bean="messageDao" method="removeRecord">
+			<method-arguments>
+				<argument expression="flowScope.id" />
+			</method-arguments>
+			<method-result name="deleteSignal" scope="flow"/>
+		</bean-action>
+		<transition to="check-signal-decision" />
+	</action-state>
+	
+	<decision-state id="check-signal-decision">
+		<if test="${flowScope.deleteSignal == 0}" then="message-info-screen" else="finish"/>
+	</decision-state>
+
+	<end-state id="finish" />
+
+	<import resource="../beans/message-beans.xml" />
+
+</flow>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="add-office-screen" />
+
+	<view-state id="add-office-screen" view="office_add">
+		<render-actions>
+			<action bean="addOfficeFormAction" method="setupForm" />
+			<bean-action bean="userHelper" method="populateCountry">
+				<method-result name="countries" />
+			</bean-action>
+		</render-actions>
+		<transition to="create-action" on="create">
+			<action bean="addOfficeFormAction" method="bindAndValidate" />
+		</transition>
+	</view-state>
+	
+	<action-state id="create-action">
+		<bean-action bean="officeHelper" method="addNewOffice">
+			<method-arguments>
+				<argument expression="conversationScope.office" />
+			</method-arguments>
+			<method-result name="result" scope="flow"/>
+		</bean-action>
+		<transition to="add-office-screen" />
+	</action-state>
+	
+	<import resource="../beans/office-beans.xml" />
+	<import resource="../beans/user-beans.xml" />
+
+</flow>          
+               

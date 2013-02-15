@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="view-group-screen" />
+
+	<view-state id="view-group-screen" view="group_view">
+		<render-actions>
+			<action bean="viewGroupsFormAction" method="setupForm" />
+		</render-actions>
+		<transition to="search-action" on="search">
+			<action bean="viewGroupsFormAction" method="bindAndValidate" />
+		</transition>
+		<transition on="select" to="browse-group" />
+	</view-state>
+
+	<action-state id="search-action">
+		<bean-action bean="groupHelper" method="viewGroups">
+			<method-arguments>
+				<argument expression="conversationScope.group" />
+			</method-arguments>
+			<method-result name="groups" scope="conversation" />
+		</bean-action>
+		<transition to="view-group-screen" />
+	</action-state>
+
+	<subflow-state id="browse-group" flow="group-info-flow">
+		<attribute-mapper>
+			<input-mapper>
+				<mapping source="requestParameters.id" target="id" from="string" to="long" />
+			</input-mapper>
+		</attribute-mapper>
+		<transition on="finish" to="search-action" />
+	</subflow-state>
+
+	<import resource="../beans/group-beans.xml" />
+
+</flow>          
+               

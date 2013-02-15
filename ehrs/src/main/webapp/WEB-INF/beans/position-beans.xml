@@ -1,0 +1,34 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="addPositionFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.position.Position" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.position.AddPositionFormValidator">
+				<property name="positionDao" ref="positionDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="viewPositionsFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.position.Position" />
+		<property name="formObjectScope" value="CONVERSATION" />
+	</bean>
+
+	<bean id="changePositionFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.position.Position" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.position.ChangePositionValidator">
+				<property name="positionDao" ref="positionDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="positionHelper" class="lv.kvd.lu.position.PositionHelper">
+		<property name="positionDao" ref="positionDao" />
+	</bean>
+
+</beans>

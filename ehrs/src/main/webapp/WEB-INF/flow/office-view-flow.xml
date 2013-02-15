@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="view-office-screen" />
+
+	<view-state id="view-office-screen" view="office_view">
+		<render-actions>
+			<action bean="viewOfficesFormAction" method="setupForm" />
+		</render-actions>
+		<transition to="search-action" on="search">
+			<action bean="viewOfficesFormAction" method="bindAndValidate" />
+		</transition>
+		<transition on="select" to="browse-office" />
+	</view-state>
+
+	<action-state id="search-action">
+		<bean-action bean="officeHelper" method="viewOffices">
+			<method-arguments>
+				<argument expression="conversationScope.office" />
+			</method-arguments>
+			<method-result name="offices" scope="conversation" />
+		</bean-action>
+		<transition to="view-office-screen" />
+	</action-state>
+
+	<subflow-state id="browse-office" flow="office-info-flow">
+		<attribute-mapper>
+			<input-mapper>
+				<mapping source="requestParameters.id" target="id" from="string" to="long" />
+			</input-mapper>
+		</attribute-mapper>
+		<transition on="finish" to="search-action" />
+	</subflow-state>
+
+	<import resource="../beans/office-beans.xml" />
+
+</flow>          
+               

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="compose-message-screen" />
+
+	<view-state id="compose-message-screen" view="message_compose">
+		<render-actions>
+			<action bean="composeMessageAction" method="setupForm" />
+			<bean-action bean="messageHelper" method="populateUser">
+				<method-result name="users"/>
+			</bean-action>
+		</render-actions>
+		<transition to="send-action" on="send">
+			<action bean="composeMessageAction" method="bindAndValidate" />
+		</transition>
+	</view-state>
+	
+	<action-state id="send-action">
+		<bean-action bean="messageHelper" method="sendMessage">
+			<method-arguments>
+				<argument expression="conversationScope.message" />
+			</method-arguments>
+			<method-result name="result" scope="flow"/>
+		</bean-action>
+		<transition to="compose-message-screen" />
+	</action-state>
+
+	<import resource="../beans/message-beans.xml" />
+
+</flow>

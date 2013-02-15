@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="view-skill-screen" />
+
+	<view-state id="view-skill-screen" view="skill_view">
+		<render-actions>
+			<action bean="viewSkillsFormAction" method="setupForm" />
+			<bean-action bean="skillHelper" method="populateGroup">
+				<method-result name="groups" />
+			</bean-action>
+		</render-actions>
+		<transition to="search-action" on="search">
+			<action bean="viewSkillsFormAction" method="bindAndValidate" />
+		</transition>
+		<transition on="select" to="browse-skill" />
+	</view-state>
+
+	<action-state id="search-action">
+		<bean-action bean="skillHelper" method="viewSkills">
+			<method-arguments>
+				<argument expression="conversationScope.skill" />
+			</method-arguments>
+			<method-result name="skills" scope="conversation" />
+		</bean-action>
+		<transition to="view-skill-screen" />
+	</action-state>
+
+	<subflow-state id="browse-skill" flow="skill-info-flow">
+		<attribute-mapper>
+			<input-mapper>
+				<mapping source="requestParameters.id" target="id" from="string" to="long" />
+			</input-mapper>
+		</attribute-mapper>
+		<transition on="finish" to="search-action" />
+	</subflow-state>
+
+	<import resource="../beans/skill-beans.xml" />
+
+</flow>          
+               

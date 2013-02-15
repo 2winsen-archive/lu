@@ -1,0 +1,23 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="composeMessageAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.message.Message" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.message.ComposeMessageValidator" />
+		</property>
+	</bean>
+
+	<bean id="viewMessageAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.message.Message" />
+		<property name="formObjectScope" value="CONVERSATION" />
+	</bean>
+
+	<bean id="messageHelper" class="lv.kvd.lu.message.MessageHelper">
+		<property name="messageDao" ref="messageDao" />
+		<property name="userDao" ref="userDao" />
+	</bean>
+
+</beans>

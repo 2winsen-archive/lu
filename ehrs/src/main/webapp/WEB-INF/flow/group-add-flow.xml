@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="add-group-screen" />
+
+	<view-state id="add-group-screen" view="group_add">
+		<render-actions>
+			<action bean="addGroupFormAction" method="setupForm" />
+		</render-actions>
+		<transition to="create-action" on="create">
+			<action bean="addGroupFormAction" method="bindAndValidate" />
+		</transition>
+	</view-state>
+	
+	<action-state id="create-action">
+		<bean-action bean="groupHelper" method="addNewGroup">
+			<method-arguments>
+				<argument expression="conversationScope.group" />
+			</method-arguments>
+			<method-result name="result" scope="flow"/>
+		</bean-action>
+		<transition to="add-group-screen" />
+	</action-state>
+	
+	<import resource="../beans/group-beans.xml" />
+
+</flow>          
+               

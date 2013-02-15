@@ -1,0 +1,34 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="addProjectFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.project.Project" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.project.AddProjectFormValidator">
+				<property name="projectDao" ref="projectDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="viewProjectsFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.project.Project" />
+		<property name="formObjectScope" value="CONVERSATION" />
+	</bean>
+
+	<bean id="changeProjectFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.project.Project" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.project.ChangeProjectValidator">
+				<property name="projectDao" ref="projectDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="projectHelper" class="lv.kvd.lu.project.ProjectHelper">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
+
+</beans>

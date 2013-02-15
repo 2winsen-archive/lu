@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<start-state idref="view-project-screen" />
+
+	<view-state id="view-project-screen" view="project_view">
+		<render-actions>
+			<action bean="viewProjectsFormAction" method="setupForm" />
+		</render-actions>
+		<transition to="search-action" on="search">
+			<action bean="viewProjectsFormAction" method="bindAndValidate" />
+		</transition>
+		<transition on="select" to="browse-project" />
+	</view-state>
+
+	<action-state id="search-action">
+		<bean-action bean="projectHelper" method="viewProjects">
+			<method-arguments>
+				<argument expression="conversationScope.project" />
+			</method-arguments>
+			<method-result name="projects" scope="conversation" />
+		</bean-action>
+		<transition to="view-project-screen" />
+	</action-state>
+
+	<subflow-state id="browse-project" flow="project-info-flow">
+		<attribute-mapper>
+			<input-mapper>
+				<mapping source="requestParameters.id" target="id" from="string" to="long" />
+			</input-mapper>
+		</attribute-mapper>
+		<transition on="finish" to="search-action" />
+	</subflow-state>
+
+	<import resource="../beans/project-beans.xml" />
+
+</flow>

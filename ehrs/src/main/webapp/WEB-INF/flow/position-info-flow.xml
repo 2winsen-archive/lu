@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-1.0.xsd">
+
+	<input-mapper>
+		<input-attribute name="id" />
+	</input-mapper>
+
+	<start-state idref="position-info-screen" />
+
+	<action-state id="parameters-uninit-action">
+		<set attribute="result" value="0" scope="flow" />
+		<transition to="position-info-screen" />
+	</action-state>
+
+	<view-state id="position-info-screen" view="position_info">
+		<render-actions>
+			<!-- Getting user -->
+			<bean-action bean="positionDao" method="getRecord">
+				<method-arguments>
+					<argument expression="flowScope.id" />
+				</method-arguments>
+				<method-result name="position" scope="flow" />
+			</bean-action>
+		</render-actions>
+		<transition on="delete" to="delete-confirmation-action" />
+		<transition on="delete-confirmed" to="delete-action" />
+		<transition on="change" to="change-view" />
+	</view-state>
+
+	<action-state id="delete-confirmation-action">
+		<set attribute="delete" value="1" scope="flow" />
+		<transition to="position-info-screen" />
+	</action-state>
+
+	<action-state id="delete-action">
+		<bean-action bean="positionDao" method="removeRecord">
+			<method-arguments>
+				<argument expression="flowScope.id" />
+			</method-arguments>
+			<method-result name="deleteSignal" scope="flow"/>
+		</bean-action>
+		<transition to="check-signal-decision" />
+	</action-state>
+	
+	<decision-state id="check-signal-decision">
+		<if test="${flowScope.deleteSignal == 0}" then="position-info-screen" else="finish"/>
+	</decision-state>
+
+	<view-state id="change-view" view="position_change">
+		<render-actions>
+			<action bean="changePositionFormAction" method="setupForm" />
+		</render-actions>
+		<transition to="change-action" on="change">
+			<action bean="changePositionFormAction" method="bindAndValidate" />
+		</transition>
+		<transition on="change-another" to="parameters-uninit-action" />
+	</view-state>
+
+	<action-state id="change-action">
+		<bean-action bean="positionHelper" method="updatePosition">
+			<method-arguments>
+				<argument expression="conversationScope.position" />
+			</method-arguments>
+			<method-result name="result" scope="flow" />
+		</bean-action>
+		<transition to="change-view" />
+	</action-state>
+
+	<end-state id="finish" />
+
+	<import resource="../beans/position-beans.xml" />
+
+</flow>

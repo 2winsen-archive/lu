@@ -1,0 +1,61 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="addUserFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.user.AddUserForm" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.user.AddUserFormValidator">
+				<property name="userDao" ref="userDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="viewUsersFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.user.User" />
+		<property name="formObjectScope" value="CONVERSATION" />
+	</bean>
+
+	<bean id="changeUserFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.user.AddUserForm" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.user.ChangeUserValidator">
+				<property name="userDao" ref="userDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="changeAddUserFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.user.AddUserForm" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.user.ChangeAddUserValidator" />
+		</property>
+	</bean>
+	
+	<bean id="changeUserSkillFormAction" class="org.springframework.webflow.action.FormAction">
+		<property name="formObjectClass" value="lv.kvd.lu.user.UserSkills" />
+		<property name="formObjectScope" value="CONVERSATION" />
+		<property name="validator">
+			<bean class="lv.kvd.lu.user.ChangeUserSkillValidator">
+				<property name="userSkillsDao" ref="userSkillsDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="userHelper" class="lv.kvd.lu.user.UserHelper">
+		<property name="userDao" ref="userDao" />
+		<property name="countryDao" ref="countryDao" />
+		<property name="positionDao" ref="positionDao" />
+		<property name="officeDao" ref="officeDao" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="userSkillsDao" ref="userSkillsDao" />
+	</bean>
+	
+	<bean id="skillHelper" class="lv.kvd.lu.skill.SkillHelper">
+		<property name="skillDao" ref="skillDao" />
+		<property name="groupDao" ref="groupDao" />
+	</bean>
+</beans>
