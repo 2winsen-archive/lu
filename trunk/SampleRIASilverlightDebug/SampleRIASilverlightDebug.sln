@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleRIASilverlightDebug", "SampleRIASilverlightDebug\SampleRIASilverlightDebug.csproj", "{AF65963F-85D0-4D53-80B7-A1796642B06C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleRIASilverlightDebug.Web", "SampleRIASilverlightDebug.Web\SampleRIASilverlightDebug.Web.csproj", "{BE1EF4CE-DF98-4C94-86A8-1F3741010ECF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF65963F-85D0-4D53-80B7-A1796642B06C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF65963F-85D0-4D53-80B7-A1796642B06C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF65963F-85D0-4D53-80B7-A1796642B06C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF65963F-85D0-4D53-80B7-A1796642B06C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE1EF4CE-DF98-4C94-86A8-1F3741010ECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE1EF4CE-DF98-4C94-86A8-1F3741010ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE1EF4CE-DF98-4C94-86A8-1F3741010ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE1EF4CE-DF98-4C94-86A8-1F3741010ECF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

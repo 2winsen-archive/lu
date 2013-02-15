@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="SampleRIASilverlightDebug.lv.lu.cds.components.SearchResults"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
+    mc:Ignorable="d">
+
+    <sdk:DataGrid
+        AutoGenerateColumns="False" 
+        HorizontalAlignment="Stretch" 
+        Name="dataGrid1" 
+        VerticalAlignment="Stretch"
+        IsReadOnly="True"
+        ItemsSource="{Binding Issues, Mode=OneWay}"
+        SelectionChanged="dataGrid1_SelectionChanged"
+        >        
+        <sdk:DataGrid.Columns>
+            <sdk:DataGridTextColumn
+                CanUserReorder="True" 
+                CanUserResize="True" 
+                CanUserSort="True" 
+                Header="Identifikators" 
+                Width=".3*"
+                Binding="{Binding id}"
+                />
+            <sdk:DataGridTextColumn
+                CanUserReorder="True" 
+                CanUserResize="True" 
+                CanUserSort="True" 
+                Header="Nosaukums"                 
+                Width=".3*" 
+                Binding="{Binding title}"
+                />
+            <sdk:DataGridTextColumn
+                CanUserReorder="True" 
+                CanUserResize="True" 
+                CanUserSort="True" 
+                Header="Statuss" 
+                Width=".3*"
+                Binding="{Binding status}"
+                />
+            <sdk:DataGridTextColumn
+                CanUserReorder="True" 
+                CanUserResize="True" 
+                CanUserSort="True" 
+                Header="Autors" 
+                Width=".3*"
+                Binding="{Binding author}"
+                />
+            <sdk:DataGridTextColumn
+                CanUserReorder="True" 
+                CanUserResize="True" 
+                CanUserSort="True" 
+                Header="Izveides datums/laiks" 
+                Width=".3*"
+                Binding="{Binding created}"
+                />
+            <sdk:DataGridTextColumn
+                CanUserReorder="True" 
+                CanUserResize="True" 
+                CanUserSort="True" 
+                Header="Prioritāte" 
+                Width=".3*"
+                Binding="{Binding priority}"
+                />
+            <sdk:DataGridTextColumn
+                CanUserReorder="True" 
+                CanUserResize="True" 
+                CanUserSort="True" 
+                Header="Sistēma" 
+                Width=".3*"
+                Binding="{Binding system}"
+                />
+        </sdk:DataGrid.Columns>
+    </sdk:DataGrid>
+
+</UserControl>
