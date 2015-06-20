@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration" xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/integration/amqp 
+		http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
+		http://www.springframework.org/schema/integration 
+		http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/integration/stream 
+		http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd
+		http://www.springframework.org/schema/rabbit 
+		http://www.springframework.org/schema/rabbit/spring-rabbit.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- MESSAGES TO EXTERNAL SYSTEMS -->
+	<int:channel id="tadeChannel" />
+
+	<int:gateway id="invoicesGateway" service-interface="lv.lu.masters.integration.gateway.TradeCollector">
+		<int:method name="collectTrade" request-channel="tadeChannel" />
+	</int:gateway>
+
+	<int:payload-type-router input-channel="tadeChannel" default-output-channel="paymentChannel">
+		<int:mapping type="lv.lu.masters.businessobjects.CashEquityTrade" channel="riskChannel" />
+	</int:payload-type-router>
+
+	<int:channel id="paymentChannel" />
+	<int:channel id="riskChannel" />
+
+	<int:transformer input-channel="paymentChannel" output-channel="externalPaymentChannel" ref="paymentSystemTradeTransformer" />
+	<int:transformer input-channel="riskChannel" output-channel="externalRiskChannel" ref="riskSystemTradeTransformer" />
+
+	<int:channel id="externalPaymentChannel" />
+	<int:channel id="externalRiskChannel" />
+
+	<int-amqp:outbound-channel-adapter channel="externalPaymentChannel" amqp-template="amqpTemplate"
+		exchange-name="si.test.payment.exchange" routing-key="si.test.payment" />
+
+	<int-amqp:outbound-channel-adapter channel="externalRiskChannel" amqp-template="amqpTemplate"
+		exchange-name="si.test.risk.exchange" routing-key="si.test.risk" />
+
+
+	<!-- MESSAGES FROM EXTERNAL SYSTEMS -->
+	<int-amqp:inbound-channel-adapter channel="fromPayment" queue-names="si.test.payment.queue"
+		connection-factory="connectionFactory" />
+		
+	<int-amqp:inbound-channel-adapter channel="fromRisk" queue-names="si.test.risk.queue"
+		connection-factory="connectionFactory" />		
+
+
+	<!-- RABBIT MQ CONFIGURATION -->
+	<rabbit:connection-factory id="connectionFactory" />
+
+	<rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
+
+	<rabbit:admin connection-factory="connectionFactory" />
+
+	<rabbit:queue name="si.test.payment.queue" />
+	<rabbit:queue name="si.test.risk.queue" />
+
+	<rabbit:direct-exchange name="si.test.payment.exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="si.test.payment.queue" key="si.test.payment" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<rabbit:direct-exchange name="si.test.risk.exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="si.test.risk.queue" key="si.test.risk" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+</beans>
